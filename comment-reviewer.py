@@ -1,5 +1,6 @@
 from git import Repo
 import sys
+import os
 
 if len(sys.argv) != 2:
     print "Usage: %s [path]" % sys.argv [0]
@@ -10,10 +11,11 @@ repo_path = sys.argv [1]
 repo = Repo (repo_path)
 files = repo.git.ls_tree('--name-only', r="master")
 file_list = files.split('\n')
+print file_list
 for fname in file_list:
     if fname[-2:] != 'py':
         continue
-    file = open (repo_path + fname)
+    file = open (os.path.join(repo_path,fname))
     content = file.read ()
     comments = []
     current_comment = ''
