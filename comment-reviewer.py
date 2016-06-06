@@ -1,6 +1,8 @@
-from git import Repo
-import sys
 import os
+import sys
+
+from git import Repo
+
 
 if len(sys.argv) != 2:
     print "Usage: %s [path]" % sys.argv[0]
