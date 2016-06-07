@@ -1,9 +1,8 @@
 import os
 import sys
 
-<<<<<<< 03ab9584c03cf12b7d74fc92525efcaa3885fc81
 from git import Repo
-
+from enchant.checker import SpellChecker
 
 if len(sys.argv) != 2:
     print "Usage: %s [path]" % sys.argv[0]
@@ -14,6 +13,8 @@ repo_path = sys.argv[1]
 repo = Repo(repo_path)
 files = repo.git.ls_tree('--name-only', r="master")
 file_list = files.split('\n')
+
+spell_checker = SpellChecker("en_US")
 
 for fname in file_list:
     if fname[-3:] != '.py' or "migration" in fname:
@@ -40,4 +41,7 @@ for fname in file_list:
         print "\033[34m\033[1m--- File: %s ---\033[0m" % fname
         for comment in comments:
             print comment
+            spell_checker.set_text(comment)
+            for err in spell_checker:
+                print "\033[31mERROR: %s\033[0m" % err.word
 
