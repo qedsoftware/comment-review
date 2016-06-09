@@ -1,2 +1,4 @@
-gitpython
-pyenchant
+gitdb==0.6.4
+GitPython==2.0.5
+pyenchant==1.6.6
+smmap==0.9.0
