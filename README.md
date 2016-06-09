@@ -1,6 +1,6 @@
-Comment Reviewer
+Comment Review
 ================
+Command-line tool to review comments in code.
+Type comment-review -h for usage directions.
 
-==Usage:
-comment-reviewer.py [path to git repo]
-
+QED | http://qed.ai
