@@ -10,6 +10,18 @@ from enchant.checker import SpellChecker
 
 PROG_NAME = "comment-review"
 
+COLOR_OUTPUT = {
+        "filename":"\033[34m\033[1m--- File: %s ---\033[0m",
+        "line_num":"\033[32m\033[1m{}: \033[0m",
+        "error":"\033[31mERROR: %s\033[0m"
+        }
+
+NO_COLOR_OUTPUT = {
+        "filename":"--- File: %s ---",
+        "line_num":"{}: ",
+        "error":"ERROR: %s"
+        }
+
 def usage():
     print('Usage:\n\t%10s %20s %30s' % (PROG_NAME, "", "run reviewer on files under git version control in current directory"))
     print('\n\t%10s %20s 30s' % (PROG_NAME, "[path/to/folder]", "run reviewer on files under git version control in specified directory"))
@@ -32,6 +44,7 @@ def main(argv):
     is_no_color = False
     is_all_files = False
     output_filename = None
+    out_strings = COLOR_OUTPUT
 
     # command-line arguments
     try:
@@ -46,6 +59,7 @@ def main(argv):
         elif opt in ("-m", "--comments-only"):
             is_comments_only = True
         elif opt in ("-n", "--no-color"):
+            out_strings = NO_COLOR_OUTPUT
             is_no_color = True
         elif opt in ("-a", "--all-files"):
             is_all_files = True
@@ -80,7 +94,7 @@ def main(argv):
         for character in content:
             if character == '#':
                 flag = 1
-                current_comment += "\033[32m\033[1m{}: \033[0m".format(line_num)
+                current_comment += out_strings ['line_num'].format(line_num)
             elif character == '\n':
                 line_num += 1
                 if flag:
@@ -90,12 +104,12 @@ def main(argv):
             if flag:
                 current_comment += character
         if len(comments) > 0:
-            print "\033[34m\033[1m--- File: %s ---\033[0m" % fname
+            print out_strings ['filename'] % fname
             for comment in comments:
                 print comment
                 spell_checker.set_text(removeURLs(comment))
                 for err in spell_checker:
-                    print "\033[31mERROR: %s\033[0m" % err.word
+                    print out_strings ['error'] % err.word
 
 
 if __name__ == "__main__":
