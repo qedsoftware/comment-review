@@ -11,25 +11,25 @@ from enchant.checker import SpellChecker
 PROG_NAME = "comment-review"
 
 COLOR_OUTPUT = {
-        "filename":"\033[34m\033[1m--- File: %s ---\033[0m",
+        "filename":"\033[34m\033[1m--- File: {} ---\033[0m",
         "line_num":"\033[32m\033[1m{}: \033[0m",
-        "error":"\033[31mERROR: %s\033[0m"
+        "error":"\033[31mERROR: {}\033[0m"
         }
 
 NO_COLOR_OUTPUT = {
-        "filename":"--- File: %s ---",
+        "filename":"--- File: {} ---",
         "line_num":"{}: ",
-        "error":"ERROR: %s"
+        "error":"ERROR: {}"
         }
 
 def usage():
-    print('Usage:\n\t%10s %20s %30s' % (PROG_NAME, "", "run reviewer on files under git version control in current directory"))
-    print('\n\t%10s %20s 30s' % (PROG_NAME, "[path/to/folder]", "run reviewer on files under git version control in specified directory"))
+    print('Usage:\n\t{}\t{} {}'.format(PROG_NAME, "", "run reviewer on files under git version control in current directory"))
+    print('\n\t{:10} {:20} {:30}'.format(PROG_NAME, "[path/to/folder]", "run reviewer on files under git version control in specified directory"))
     print('Options:')
-    print('\t%-2s %-10s %-10s %-30s' % ("-m", "--comments-only", "", "print only comments, without code"))
-    print('\t%-2s %-10s %-10s %-30s' % ("-n", "--no-color", "", "disable color"))
-    print('\t%-2s %-10s %-10s %-30s' % ("-a", "--all-files", "", "run reviewer on all files in directory, not just those under version control"))
-    print('\t%-2s %-10s %-10s %-30s' % ("-o", "--output", "[filename]", "pipe output to a file"))
+    print('\t{:2} {:15} {:10} {:30}'.format("-m", "--comments-only", "", "print only comments, without code"))
+    print('\t{:2} {:15} {:10} {:30}'.format("-n", "--no-color", "", "disable color"))
+    print('\t{:2} {:15} {:10} {:30}'.format("-a", "--all-files", "", "run reviewer on all files in directory, not just those under version control"))
+    print('\t{:2} {:10} {:15} {:30}'.format("-o", "--output", "[filename]", "pipe output to a file"))
 
 def removeURLs(txt):
     regex = r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))'
@@ -69,7 +69,7 @@ def main(argv):
         folder = "".join(args)
     
     if not os.path.exists(folder) or not os.path.isdir(folder):
-        sys.exit('ERROR: %s was not found or is not a folder!' % folder)
+        sys.exit('ERROR: {} was not found or is not a folder!'.format(folder))
 
     repo = Repo(folder)
     files = repo.git.ls_tree('--name-only', r="master")
@@ -104,12 +104,12 @@ def main(argv):
             if flag:
                 current_comment += character
         if len(comments) > 0:
-            print out_strings ['filename'] % fname
+            print out_strings ['filename'].format(fname)
             for comment in comments:
                 print comment
                 spell_checker.set_text(removeURLs(comment))
                 for err in spell_checker:
-                    print out_strings ['error'] % err.word
+                    print out_strings ['error'].format(err.word)
 
 
 if __name__ == "__main__":
