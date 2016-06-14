@@ -11,7 +11,7 @@ if len(sys.argv) != 2:
 repo_path = sys.argv[1]
 
 repo = Repo(repo_path)
-files = repo.git.ls_tree('--name-only', r="master")
+files = repo.git.ls_files()
 file_list = files.split('\n')
 
 spell_checker = SpellChecker("en_US")
