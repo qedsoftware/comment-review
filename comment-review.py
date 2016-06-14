@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 import getopt
+import re
 
 from git import Repo
 from enchant.checker import SpellChecker
@@ -17,6 +19,10 @@ def usage():
     print('\t%-2s %-10s %-10s %-30s' % ("-a", "--all-files", "", "run reviewer on all files in directory, not just those under version control"))
     print('\t%-2s %-10s %-10s %-30s' % ("-o", "--output", "[filename]", "pipe output to a file"))
 
+def removeURLs(txt):
+    regex = r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))'
+    ret = re.sub(regex, '', txt)
+    return ret
 
 def main(argv):
 
@@ -87,7 +93,7 @@ def main(argv):
             print "\033[34m\033[1m--- File: %s ---\033[0m" % fname
             for comment in comments:
                 print comment
-                spell_checker.set_text(comment)
+                spell_checker.set_text(removeURLs(comment))
                 for err in spell_checker:
                     print "\033[31mERROR: %s\033[0m" % err.word
 
