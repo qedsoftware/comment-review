@@ -93,12 +93,14 @@ def main(argv):
             continue
         file = open(os.path.join(folder, fname))
         content = file.read()
+        line_num = 1
         comments = []
         current_comment = ''
+        current_line = out_strings ['line_num'].format(line_num)
         flag = 0
-        line_num = 1
         for character in content:
-            if character == '#':
+            current_line += character
+            if character == '#' and flag == 0:
                 flag = 1
                 current_comment += out_strings ['line_num'].format(line_num)
             elif character == '\n':
@@ -106,8 +108,12 @@ def main(argv):
                 if flag:
                     flag = 0
                     current_comment += '\n'
-                    comments.append(current_comment)
+                    if is_comments_only == True:
+                        comments.append(current_comment)
+                    else:
+                        comments.append(current_line)
                     current_comment = ''
+                current_line = out_strings ['line_num'].format(line_num)
             if flag:
                 current_comment += character
         if len(comments) > 0:
