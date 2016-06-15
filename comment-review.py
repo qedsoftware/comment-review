@@ -124,6 +124,9 @@ def main(argv):
                 for err in spell_checker:
                     out_file.write(out_strings ['error'].format(err.word))
 
+    if output_filename != None:
+        out_file.close()
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
