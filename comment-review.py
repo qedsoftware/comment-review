@@ -11,15 +11,15 @@ from enchant.checker import SpellChecker
 PROG_NAME = "comment-review"
 
 COLOR_OUTPUT = {
-        "filename":"\033[34m\033[1m--- File: {} ---\033[0m",
+        "filename":"\033[34m\033[1m--- File: {} ---\033[0m\n",
         "line_num":"\033[32m\033[1m{}: \033[0m",
-        "error":"\033[31mERROR: {}\033[0m"
+        "error":"\033[31mERROR: {}\033[0m\n"
         }
 
 NO_COLOR_OUTPUT = {
-        "filename":"--- File: {} ---",
+        "filename":"--- File: {} ---\n",
         "line_num":"{}: ",
-        "error":"ERROR: {}"
+        "error":"ERROR: {}\n"
         }
 
 def usage():
@@ -65,11 +65,17 @@ def main(argv):
             is_all_files = True
         elif opt in ("-o", "--output"):
             output_filename = arg
+            out_strings = NO_COLOR_OUTPUT # if writing to file, don't use colour
     if len(args) > 0:
         folder = "".join(args)
     
     if not os.path.exists(folder) or not os.path.isdir(folder):
         sys.exit('ERROR: {} was not found or is not a folder!'.format(folder))
+
+    if output_filename != None:
+        out_file = open(output_filename, "w+")
+    else:
+        out_file = sys.stdout
 
     repo = Repo(folder)
     files = repo.git.ls_tree('--name-only', r="master")
@@ -99,17 +105,18 @@ def main(argv):
                 line_num += 1
                 if flag:
                     flag = 0
+                    current_comment += '\n'
                     comments.append(current_comment)
                     current_comment = ''
             if flag:
                 current_comment += character
         if len(comments) > 0:
-            print out_strings ['filename'].format(fname)
+            out_file.write(out_strings ['filename'].format(fname))
             for comment in comments:
-                print comment
+                out_file.write(comment)
                 spell_checker.set_text(removeURLs(comment))
                 for err in spell_checker:
-                    print out_strings ['error'].format(err.word)
+                    out_file.write(out_strings ['error'].format(err.word))
 
 
 if __name__ == "__main__":
