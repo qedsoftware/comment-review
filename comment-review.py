@@ -65,7 +65,7 @@ def main(argv):
             is_all_files = True
         elif opt in ("-o", "--output"):
             output_filename = arg
-            out_strings = NO_COLOR_OUTPUT # if writing to file, don't use colour
+            out_strings = NO_COLOR_OUTPUT # if writing to file, don't use color
     if len(args) > 0:
         folder = "".join(args)
     
@@ -78,8 +78,14 @@ def main(argv):
         out_file = sys.stdout
 
     repo = Repo(folder)
-    files = repo.git.ls_tree('--name-only', r="master")
-    file_list = files.split('\n')
+    if is_all_files == True:
+        file_list = []
+        for path, subdirs, fnames in os.walk(folder):
+            for file in fnames:
+                file_list.append(os.path.join(path, file))
+    else:
+        files = repo.git.ls_tree('--name-only', r="master")
+        file_list = files.split('\n')
     spell_checker = SpellChecker("en_US")
 
     if output_filename:
