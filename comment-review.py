@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import argparse
@@ -35,7 +35,7 @@ class Logger:
 def parse_arguments():
 
     parser = argparse.ArgumentParser(
-                 description='Inspect comments with possible spelling errors.')
+        description='Inspect comments with possible spelling errors.')
     parser.add_argument('--color', dest='color', action='store_true')
     parser.add_argument('--no-color', dest='color', action='store_false')
     parser.set_defaults(color=True)
